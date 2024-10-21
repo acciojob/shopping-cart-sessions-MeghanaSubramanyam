@@ -24,7 +24,19 @@ function displayProducts() {
 // Function to add product to cart
 function addToCart(product) {
   let cart = getCartFromSession();
-  cart.push(product);
+
+  // Check if the product already exists in the cart
+  const existingProduct = cart.find(item => item.id === product.id);
+  
+  if (existingProduct) {
+    // Increment quantity if the product is already in the cart
+    existingProduct.quantity += 1;
+  } else {
+    // Add new product to the cart with a quantity field
+    product.quantity = 1;
+    cart.push(product);
+  }
+
   sessionStorage.setItem("cart", JSON.stringify(cart));
   displayCart();
 }
@@ -47,7 +59,7 @@ function displayCart() {
   } else {
     cart.forEach(item => {
       const li = document.createElement("li");
-      li.textContent = `${item.name} - $${item.price}`;
+      li.textContent = `${item.name} - $${item.price} (x${item.quantity})`;
       cartList.appendChild(li);
     });
   }
